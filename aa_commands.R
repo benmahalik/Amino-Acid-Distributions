@@ -44,3 +44,63 @@ whey.soy_dat<-whey.soy_dat%>%
   rename(amino_acid=amino_acids_2)%>%
   rename(whey_perc=whey_amino_acids)%>%
   rename(soy_perc=soy_amino_acids)
+
+#other recodings
+collagen_dat<-rename(collagen_dat,   "collagen_perc"= collagen_amino_acids)
+
+beef_dat<-rename(beef_dat, "b_quantity (mg)"="quantity (mg)")
+
+egg_dat<-rename(egg_dat, "egg_perc"=egg_amino_acid)
+
+
+#combining separate dataframes into list and then merging them together into dataframe "dat"
+aa_list<-list(beef_dat=beef_dat, collagen_dat=collagen_dat, egg_dat=egg_dat, whey.soy_dat=whey.soy_dat)
+
+dat<-aa_list[[1]]
+for(i in 2:length(aa_list)){
+  dat<-merge(dat,aa_list[[i]], all.x =T, all.y=T)
+  
+}
+
+#data cleaning and fixing data entry errors
+dat<-dat%>%
+  select(-"b_quantity (mg)",-"proportion")%>%
+  rename(beef_perc=percentage)
+
+dat<-dat[!dat$amino_acid=="Glutamin_acid",]
+dat[is.na(dat$egg_perc) & dat$amino_acid=="Glutamic_acid","egg_perc"]<-13.04
+
+dat<-dat[!dat$amino_acid=="Tryptothan",]
+##egg_perc/Tryptophan=1.25
+dat[is.na(dat$egg_perc) & dat$amino_acid=="Tryptophan","egg_perc"]<-1.25
+
+##Cysteine(beef_perc,egg_perc)=c(2.9,2.34)
+dat<-dat[!dat$amino_acid=="Cystine",]
+dat[is.na(dat$beef_perc) & dat$amino_acid=="Cysteine","beef_perc"]<-2.9
+dat[is.na(dat$egg_perc) & dat$amino_acid=="Cysteine","egg_perc"]<-2.34
+
+#resets observations, to account for ommitted observations
+rownames(dat)<-1:nrow(dat)
+
+#altering source of beef amino acids with new data frame "protein
+protein<-data.frame(amino_acid=c(140,849,967,1691,1797,554,274,840,677, 1055, 1375, 678, 1292, 1936, 3191, 1294,1013,837,223))
+
+
+protein$perc<-protein$amino_acid/213 #this factor is a combination of converting to percentage, and change of unit to milligram
+protein<-rename(protein, quantity=amino_acid)
+protein$amino_acid<-c("Tryptophan","Threonine","Isoleucine","Leucine","Lysine","Methionine","Cysteine","Phenylalanine","Tyrosine","Valine","Arginine","Histidine","Alanine","Aspartic_acid","Glutamic_acid","Glycine","Proline","Serine","Hydroxyproline")
+protein<-protein[,c(3,1,2)]
+protein$beef2_perc<-protein$perc
+protein$beef2_perc<-round(protein$beef2_perc,2)
+protein$quantity<-NULL
+
+dat<-merge(dat,protein)
+dat[,c("beef_perc","perc")]<-NULL
+dat<-rename(dat, beef_perc=beef2_perc)
+
+
+dat$amino_acid_sum<-rowSums(cbind(dat$collagen_perc,dat$egg_perc,dat$whey_perc,dat$soy_perc,dat$beef_perc),na.rm = T)
+
+
+write.csv(dat, "DATA SETS/amino acid composition.csv")
+
