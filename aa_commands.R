@@ -24,3 +24,23 @@ amino_acids_2<-c("Aspartic_acid","Serine","Glutamic_acid","Histidine","Glycine",
 whey_amino_acids<-c(11,5.7,18.6,1.8,1.8,7.4,2.3,5.3,2.6,5.1,1.5,5.7,2.7,1.4,9.8,9.5,6.6,1.4)
 soy_amino_acids<-c(12.1,5.2,19.7,2.5,4.3,3.9,7.4,4.4,3.1,3.9,1.2,3.7,4.9,1.3,7.5,6.6,6.4,2.2)
 whey.soy_dat<-data.frame(amino_acids_2,whey_amino_acids,soy_amino_acids)
+
+
+amino_acids_3<-c("Aspartic_acid","Serine","Glutamic_acid","Glycine","Arginine","Threonine","Alanine","Proline","Hydroxyproline","Tyrosine","Valine","Methionine","Lysine","Isoleucine","Leucine","Phenylalanine")
+collagen_amino_acids<-c(4.97,3.9,9.27,26.67,9.4,2.64,7.35,13,9,.5,2.53,.61,3.5,.94,2.39,1.84)
+collagen_dat<-data.frame(amino_acids_3,collagen_amino_acids)
+
+
+##checks to see if the sum of proportions adds to 100. 
+#sum(egg_amino_acid)
+#sum(soy_amino_acids)
+#sum(whey_amino_acids)
+
+
+#standardizing the variables with anino acid factors to "amino_acid"
+#This will allow the observations to be matched and the separate datasets to be merged together
+collagen_dat<-rename(collagen_dat,  amino_acid=amino_acids_3)
+whey.soy_dat<-whey.soy_dat%>%
+  rename(amino_acid=amino_acids_2)%>%
+  rename(whey_perc=whey_amino_acids)%>%
+  rename(soy_perc=soy_amino_acids)
