@@ -6,3 +6,6 @@ I did this because I could not easily find a source that had all of the informat
 While the code runs perfectly fine,it retains some mistakes I made early on, and then corrected further down in the script. I left it this way because part of my intention is to demonstrate the various things I can do with R, such as recoding and imputing values.
 
 The output so far  is just a data frame, but eventually in the next day or so I will be adding graphs and other visuals to it.
+
+install.package(jpeg)
+
