@@ -1,4 +1,4 @@
-Amino-Acid-Distributions
+# Amino-Acid-Distributions
 This repo contains code, in R, for creating a data frame of the distribution of amino acids of various types of foods including: beef, egg, collagen, soy, and whey.
 
 I did this because I could not easily find a source that had all of the information that I wanted in one place. 
@@ -7,5 +7,5 @@ While the code runs perfectly fine,it retains some mistakes I made early on, and
 
 The output so far  is just a data frame, but eventually in the next day or so I will be adding graphs and other visuals to it.
 
-install.package(jpeg)
+
 
